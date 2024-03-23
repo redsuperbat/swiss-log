@@ -4,7 +4,7 @@ import { ConsoleLogFormatter } from "./formatters/ConsoleLogFormatter.js";
 import type { LogFormatter } from "./formatters/LogFormatter.js";
 
 export interface CorrelationIdProvider {
-  get(): string;
+  get(): string | undefined;
 }
 
 export class Logger {
