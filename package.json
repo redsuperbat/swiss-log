@@ -5,6 +5,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "build": "tsc --outDir dist"
+  },
   "main": "src/index.ts",
   "type": "module",
   "keywords": [],

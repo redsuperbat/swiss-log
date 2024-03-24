@@ -1,6 +1,6 @@
-import type { LogEntry } from "../LogEntry.js";
-import { LogLevel } from "../LogLevel.js";
-import type { LogFormatter } from "./LogFormatter.js";
+import type { LogEntry } from "../LogEntry";
+import { LogLevel } from "../LogLevel";
+import type { LogFormatter } from "./LogFormatter";
 
 export class ConsoleLogFormatter implements LogFormatter {
   #clc = {

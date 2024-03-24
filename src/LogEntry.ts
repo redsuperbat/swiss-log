@@ -1,4 +1,4 @@
-import type { LogLevel } from "./LogLevel.js";
+import type { LogLevel } from "./LogLevel";
 
 export interface JsonSerializable {
   [x: string]:
