@@ -2,11 +2,14 @@
   "name": "swiss-log",
   "version": "1.0.0",
   "description": "Logger with sensible defaults. Only usable in typescript projects",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "main": "src/index.ts",
   "type": "module",
   "keywords": [],
   "author": "Max Netterberg",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^5.4.3"
   }
