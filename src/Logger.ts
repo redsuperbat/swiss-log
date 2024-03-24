@@ -1,7 +1,7 @@
-import type { JsonSerializable, LogEntry } from "./LogEntry";
-import { LogLevel } from "./LogLevel";
-import { ConsoleLogFormatter } from "./formatters/ConsoleLogFormatter";
-import type { LogFormatter } from "./formatters/LogFormatter";
+import type { JsonSerializable, LogEntry } from "./LogEntry.js";
+import { LogLevel } from "./LogLevel.js";
+import { ConsoleLogFormatter } from "./formatters/ConsoleLogFormatter.js";
+import type { LogFormatter } from "./formatters/LogFormatter.js";
 
 export interface CorrelationIdProvider {
   get(): string | undefined;

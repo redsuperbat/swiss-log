@@ -1,6 +1,6 @@
-import type { LogEntry } from "../LogEntry";
-import { LogLevel } from "../LogLevel";
-import type { LogFormatter } from "./LogFormatter";
+import type { LogEntry } from "../LogEntry.js";
+import { LogLevel } from "../LogLevel.js";
+import type { LogFormatter } from "./LogFormatter.js";
 
 export class GoogleCloudRunLogFormatter implements LogFormatter {
   format(entry: LogEntry): string {
