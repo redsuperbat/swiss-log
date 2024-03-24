@@ -1,0 +1,38 @@
+name: Publish to NPM
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Setup node version
+        uses: actions/setup-node@v3
+        with:
+          node-version: "v16.13.0"
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build
+
+      - name: Publish
+        run: yarn publish
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_STAGING_USERNAME }}
+          password: ${{ secrets.FTP_STAGING_PASSWORD }}
+          local-dir: "./dist/"
+          server-dir: "./public_html/"

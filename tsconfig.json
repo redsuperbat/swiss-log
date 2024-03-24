@@ -4,6 +4,9 @@
     "module": "ESNext" /* Specify what module code is generated. */,
     "strict": true /* Enable all strict type-checking options. */,
     "skipLibCheck": true,
+    "outDir": "dist",
+    "declaration": true,
     "verbatimModuleSyntax": true
-  }
+  },
+  "include": ["src"]
 }
