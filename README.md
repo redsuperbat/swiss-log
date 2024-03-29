@@ -19,6 +19,12 @@ logger.info("swiss log");
 Swiss log has a single interface for formatting logs. The interface implements a single method `LogFormatter.format` which receives a `LogEntry` and returns a string.
 Swiss log has a couple of formatters that you can use directly but it also supports creating your own formatters.
 
+The default formatter is the `ConsoleLogFormatter` which prints the logs in the following format:
+
+```shell
+[2024-03-29T17:18:12.505Z] INFO [NoContext] started server {"port":3030}
+```
+
 Using swiss-log in google cloud run:
 
 ```ts
