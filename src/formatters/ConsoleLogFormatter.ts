@@ -10,7 +10,7 @@ export class ConsoleLogFormatter implements LogFormatter {
     [LogLevel.info]: (text: string) => `\x1B[32m${text}\x1B[39m`,
     [LogLevel.trace]: (text: string) => `\x1B[96m${text}\x1B[39m`,
     [LogLevel.error]: (text: string) => `\x1B[31m${text}\x1B[39m`,
-    [LogLevel.fatal]: (text: string) => `\x1B[96m${text}\x1B[39m`,
+    [LogLevel.fatal]: (text: string) => `\x1B[31m${text}\x1B[39m`,
     [LogLevel.warn]: (text: string) => `\x1B[33m${text}\x1B[39m`,
     [LogLevel.silent]: () => {
       throw new Error("silent log level should not be passed");
@@ -25,12 +25,14 @@ export class ConsoleLogFormatter implements LogFormatter {
     const { body, level } = entry;
     let { message, context } = entry;
     const colorFn = this.#colors[level];
-    const readableLevel = LogLevel.toReadable(level).toUpperCase();
+    const readableLevel = LogLevel.toReadable(level)
+      .toUpperCase()
+      .padEnd(5, " ");
     const colorLevel = colorFn(readableLevel);
     message = colorFn(message);
     const timestamp = new Date().toISOString();
     context = this.#clc.yellow(`[${context ?? "NoContext"}]`);
-    message = `[${timestamp}] ${colorLevel}\t${context} ${message}`;
+    message = `[${timestamp}] ${colorLevel} ${context} ${message}`;
     return `${message} ${body ? this.#clc.gray(JSON.stringify(body)) : ""}`;
   }
 }
