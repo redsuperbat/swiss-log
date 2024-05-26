@@ -13,7 +13,14 @@ export interface JsonSerializable {
 }
 export interface JsonArray
   extends Array<
-    string | number | boolean | Date | JsonSerializable | JsonArray
+    | string
+    | number
+    | boolean
+    | Date
+    | JsonSerializable
+    | JsonArray
+    | null
+    | undefined
   > {}
 
 export type LogEntry = {
