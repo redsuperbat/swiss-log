@@ -29,4 +29,5 @@ export type LogEntry = {
   body?: JsonSerializable;
   context?: string;
   correlationId?: string;
+  timestamp: Date;
 };

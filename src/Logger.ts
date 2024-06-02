@@ -45,6 +45,7 @@ export class Logger {
     }
     const entry: LogEntry = {
       message,
+      timestamp: new Date(),
       level,
       body,
       context: this.#context,

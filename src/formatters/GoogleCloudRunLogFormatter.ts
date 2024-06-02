@@ -10,6 +10,7 @@ export class GoogleCloudRunLogFormatter implements LogFormatter {
       body: entry.body,
       context: entry.context,
       correlationId: entry.correlationId,
+      timestamp: entry.timestamp,
     });
     return log;
   }
