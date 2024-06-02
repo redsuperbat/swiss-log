@@ -22,7 +22,7 @@ export class ConsoleLogFormatter implements LogFormatter {
   };
 
   format(entry: LogEntry): string {
-    const { body, level } = entry;
+    const { body, level, timestamp } = entry;
     let { message, context } = entry;
     const colorFn = this.#colors[level];
     const readableLevel = LogLevel.toReadable(level)
@@ -30,9 +30,8 @@ export class ConsoleLogFormatter implements LogFormatter {
       .padEnd(5, " ");
     const colorLevel = colorFn(readableLevel);
     message = colorFn(message);
-    const timestamp = new Date().toISOString();
     context = this.#clc.yellow(`[${context ?? "NoContext"}]`);
-    message = `[${timestamp}] ${colorLevel} ${context} ${message}`;
+    message = `[${timestamp.toISOString()}] ${colorLevel} ${context} ${message}`;
     return `${message} ${body ? this.#clc.gray(JSON.stringify(body)) : ""}`;
   }
 }

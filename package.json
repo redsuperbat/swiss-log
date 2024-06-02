@@ -1,10 +1,10 @@
 {
   "name": "swiss-log",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "files": [
     "dist"
   ],
-  "description": "Logger with sensible defaults. Only usable in typescript projects",
+  "description": "Logger with sensible defaults",
   "exports": {
     ".": "./dist/index.js"
   },
