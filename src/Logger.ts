@@ -45,6 +45,14 @@ export class Logger {
     this.#logLevel = level;
   }
 
+  /**
+   * Dynamically add an additional property to the logger instance
+   */
+  addProperty(key: string, value: JsonSerializable): void {
+    this.#additionalProperties ??= {};
+    this.#additionalProperties[key] = value;
+  }
+
   #log(message: string, level: LogLevel, body?: JsonSerializable) {
     if (level === LogLevel.silent) return;
     if (this.#logLevel > level) {
