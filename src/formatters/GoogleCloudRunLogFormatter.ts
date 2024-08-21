@@ -11,6 +11,7 @@ export class GoogleCloudRunLogFormatter implements LogFormatter {
       context: entry.context,
       correlationId: entry.correlationId,
       timestamp: entry.timestamp,
+      ...entry.additionalProperties,
     });
     return log;
   }

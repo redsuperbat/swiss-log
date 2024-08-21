@@ -12,19 +12,25 @@ export class Logger {
   #formatter: LogFormatter;
   #context?: string;
   #correlationIdProvider?: CorrelationIdProvider;
+  #additionalProperties?: JsonSerializable;
 
   constructor(opts: {
     formatter: LogFormatter;
     logLevel?: LogLevel;
     context?: string;
     correlationIdProvider?: CorrelationIdProvider;
+    additionalProperties?: JsonSerializable;
   }) {
     this.#context = opts.context;
     this.#formatter = opts.formatter;
     this.#correlationIdProvider = opts.correlationIdProvider;
     this.#logLevel = opts.logLevel ?? LogLevel.info;
+    this.#additionalProperties = opts.additionalProperties;
   }
 
+  /**
+   * Creates a logger with formatter {@link ConsoleLogFormatter}
+   */
   static withDefaults(): Logger {
     return new Logger({
       formatter: new ConsoleLogFormatter(),
@@ -38,6 +44,7 @@ export class Logger {
   setLogLevel(level: LogLevel): void {
     this.#logLevel = level;
   }
+
   #log(message: string, level: LogLevel, body?: JsonSerializable) {
     if (level === LogLevel.silent) return;
     if (this.#logLevel > level) {
@@ -50,6 +57,7 @@ export class Logger {
       body,
       context: this.#context,
       correlationId: this.#correlationIdProvider?.get(),
+      additionalProperties: this.#additionalProperties,
     };
     const log = this.#formatter.format(entry);
     console.log(log);

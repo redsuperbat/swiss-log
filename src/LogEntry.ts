@@ -30,4 +30,9 @@ export type LogEntry = {
   context?: string;
   correlationId?: string;
   timestamp: Date;
+  /**
+   * Additional properties which can be passed into the logger constructor
+   * Good usecases are for request scoped properties
+   */
+  additionalProperties?: JsonSerializable;
 };
