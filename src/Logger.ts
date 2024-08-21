@@ -48,7 +48,7 @@ export class Logger {
   /**
    * Dynamically add an additional property to the logger instance
    */
-  addProperty(key: string, value: JsonSerializable): void {
+  addProperty(key: string, value: JsonSerializable[string]): void {
     this.#additionalProperties ??= {};
     this.#additionalProperties[key] = value;
   }
