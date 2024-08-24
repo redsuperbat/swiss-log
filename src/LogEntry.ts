@@ -1,27 +1,20 @@
 import type { LogLevel } from "./LogLevel.js";
 
+export type JsonSerializableValue =
+  | string
+  | number
+  | boolean
+  | Date
+  | JsonSerializable
+  | JsonArray
+  | null
+  | undefined;
+
 export interface JsonSerializable {
-  [x: string]:
-    | string
-    | number
-    | boolean
-    | Date
-    | JsonSerializable
-    | JsonArray
-    | null
-    | undefined;
+  [x: string]: JsonSerializableValue;
 }
-export interface JsonArray
-  extends Array<
-    | string
-    | number
-    | boolean
-    | Date
-    | JsonSerializable
-    | JsonArray
-    | null
-    | undefined
-  > {}
+
+export interface JsonArray extends Array<JsonSerializableValue> {}
 
 export type LogEntry = {
   message: string;

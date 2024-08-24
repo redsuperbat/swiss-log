@@ -1,6 +1,6 @@
 {
   "name": "swiss-log",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "files": [
     "dist"
   ],
@@ -9,7 +9,8 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc",
+    "test": "node --import tsx/esm --test $(find . -type f -iname '*.test.ts')"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,6 +24,8 @@
   "author": "Max Netterberg",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^22.5.0",
+    "tsx": "^4.17.0",
     "typescript": "^5.4.3"
   }
 }
