@@ -1,9 +1,7 @@
 {
   "name": "swiss-log",
-  "version": "0.1.14",
-  "files": [
-    "dist"
-  ],
+  "version": "0.1.15",
+  "files": ["dist"],
   "description": "Logger with sensible defaults",
   "exports": {
     ".": "./dist/index.js"
@@ -18,9 +16,7 @@
   "repository": {
     "url": "https://github.com/redsuperbat/swiss-log"
   },
-  "keywords": [
-    "logger"
-  ],
+  "keywords": ["logger"],
   "author": "Max Netterberg",
   "license": "MIT",
   "devDependencies": {
