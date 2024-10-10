@@ -16,7 +16,6 @@ export interface CorrelationIdProvider {
 export type LoggerOpts = {
   /**
    *
-   *  ## Formatters
    *  Swiss log has a single interface for formatting logs. The interface implements a single method `LogFormatter.format` which receives a `LogEntry` and returns a string.
    *  Swiss log has a couple of formatters that you can use directly but it also supports creating your own formatters.
    *
@@ -64,7 +63,6 @@ export type LoggerOpts = {
    */
   context?: string;
   /**
-   *  ## Correlation ID
    *  When developing API:s it's common practice to attach a request scoped correlation id to the logger. swiss-log allows you to easily do this by providing a `CorrelationIdProvider` to the logger constructor.
    *
    *  ```ts
@@ -97,7 +95,6 @@ export type LoggerOpts = {
    */
   attributes?: JsonSerializable;
   /**
-   * ## Transports
    * Transports are outputs for logs after they have been passed through the formatter
    *
    * The default transport is the `ConsoleTransport` which outputs the log to the console
@@ -153,16 +150,34 @@ export class Logger {
     });
   }
 
-  setContext(context: string): void {
+  setContext(context: string): Logger {
     this.#context = context;
+    return this;
   }
 
-  setLogLevel(level: LogLevel): void {
+  setLogLevel(level: LogLevel): Logger {
     this.#logLevel = level;
+    return this;
   }
 
-  addTransport(transport: Transport): void {
+  setFormatter(formatter: LogFormatter): Logger {
+    this.#formatter = formatter;
+    return this;
+  }
+
+  setTransports(transports: Transport[]): Logger {
+    this.#transports = transports;
+    return this;
+  }
+
+  setTransport(transport: Transport): Logger {
+    this.#transports = [transport];
+    return this;
+  }
+
+  addTransport(transport: Transport): Logger {
     this.#transports.push(transport);
+    return this;
   }
 
   #extractErrorInformation(error: unknown): JsonSerializableValue {
@@ -172,29 +187,39 @@ export class Logger {
         stack: error.stack,
         cause: this.#extractErrorInformation(error.cause),
       };
-    } else if (error === undefined) {
+    }
+
+    if (error === undefined) {
       return;
-    } else if (error === null) {
+    }
+
+    if (error === null) {
       return "null error";
-    } else if (typeof error === "object") {
+    }
+
+    if (typeof error === "object") {
       return Object.fromEntries(
         Object.entries(error).map(([key, val]) => [
           key,
           this.#extractErrorInformation(val),
         ]),
       );
-    } else if (Array.isArray(error)) {
+    }
+
+    if (Array.isArray(error)) {
       return error.map(this.#extractErrorInformation);
     }
+
     return String(error);
   }
 
   /**
    * Dynamically add an additional property to the logger instance
    */
-  addProperty(key: string, value: JsonSerializable[string]): void {
+  addProperty(key: string, value: JsonSerializable[string]): Logger {
     this.#attributes ??= {};
     this.#attributes[key] = value;
+    return this;
   }
 
   /**

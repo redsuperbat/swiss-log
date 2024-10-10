@@ -44,7 +44,7 @@ export namespace LogLevel {
       case "silent":
         return LogLevel.silent;
       default:
-        throw new Error("invalid log level " + level);
+        throw new Error(`invalid log level ${level}`);
     }
   }
 }

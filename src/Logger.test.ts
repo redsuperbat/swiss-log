@@ -1,8 +1,7 @@
 import test, { describe } from "node:test";
 import { Logger } from "./Logger.js";
 import { InMemoryTransport } from "./transport/InMemoryTransport.js";
-import { ConsoleLogFormatter } from "./formatters/ConsoleLogFormatter.js";
-import * as assert from "node:assert";
+import assert from "node:assert/strict";
 import { JsonLogFormatter } from "./formatters/JsonLogFormatter.js";
 
 describe("Logger", () => {
