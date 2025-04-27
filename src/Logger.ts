@@ -21,26 +21,25 @@ export type LoggerOpts = {
    *
    *  The default formatter is the `ConsoleLogFormatter` which prints the logs in the following format:
    *
-   *  ```shell
+   *  ```bash
    *  [2024-03-29T17:18:12.505Z] INFO [NoContext] started server {"port":3030}
    *  ```
    *
    *  Using swiss-log in google cloud run:
    *
-   *  ```ts
+   *  ```typescript
    *  import { GoogleCloudRunLogFormatter, Logger } from "swiss-log";
    *
    *  const logger = new Logger({
    *    formatter: new GoogleCloudRunLogFormatter(),
    *  });
    *
-   *  // Will print logs in a structured JSON format compatible with google cloud run
-   *  logger.info("Hello");
+   *  logger.info("Hello"); // Will print logs in a structured JSON format compatible with google cloud run
    *  ```
    *
    *  Implementing your own log formatter
    *
-   *  ```ts
+   *  ```typescript
    *  import { Logger, type LogFormatter, type LogEntry } from "swiss-log";
    *
    *  const simpleFormatter: LogFormatter = {
@@ -50,8 +49,7 @@ export type LoggerOpts = {
    *  };
    *  const logger = new Logger({ formatter: simpleFormatter });
    *
-   *  // Will print only the string passed to the logger
-   *  logger.info("Hello");
+   *  logger.info("Hello"); // Will print only the string passed to the logger
    */
   formatter?: LogFormatter;
   /**
@@ -65,7 +63,7 @@ export type LoggerOpts = {
   /**
    *  When developing API:s it's common practice to attach a request scoped correlation id to the logger. swiss-log allows you to easily do this by providing a `CorrelationIdProvider` to the logger constructor.
    *
-   *  ```ts
+   *  ```typescript
    *  import {
    *    Logger,
    *    JsonLogFormatter,
@@ -101,22 +99,19 @@ export type LoggerOpts = {
    *
    * To supply your own transport implement the Transport interface
    *
-   * ```ts
+   * ```typescript
    * import { Transport } from 'swiss-log';
    *
    * class HttpTransport implements Transport {
-   *
    *   async send(log: string) {
    *     await fetch("/api/logs", { method: "POST", body: log });
    *   }
-   *
    * }
    *
    * // Will log to both http and console
    * const logger = new Logger({
    *   transports: [new HttpTransport(), new ConsoleTransport()]
    * })
-   *
    * ```
    */
   transports?: Transport[];
@@ -131,7 +126,7 @@ export class Logger {
   #correlationIdProvider?: CorrelationIdProvider;
   #attributes?: JsonSerializable;
 
-  constructor(opts: LoggerOpts) {
+  constructor(opts: LoggerOpts = {}) {
     this.#logLevel = opts.logLevel ?? LogLevel.info;
     this.#formatter = opts.formatter ?? new ConsoleLogFormatter();
     this.#transports = opts.transports ?? [new ConsoleTransport()];
@@ -142,12 +137,11 @@ export class Logger {
   }
 
   /**
-   * Creates a logger with formatter {@link ConsoleLogFormatter}
+   * Creates a logger with a console friendly formatter and
+   * a console transport. Ideal for development
    */
   static withDefaults(): Logger {
-    return new Logger({
-      formatter: new ConsoleLogFormatter(),
-    });
+    return new Logger();
   }
 
   setContext(context: string): Logger {
@@ -223,13 +217,12 @@ export class Logger {
   }
 
   /**
-   * Captures and logs the async error as an "error" log. Does not modify the
-   * error in any way but allows you to not have to wrap code in a try catch block in order to log
+   * Captures and logs any rejected promise as an "error" log.
+   * The captured rejected promise is not modified and re-thrown.
    *
-   * ```ts
+   * ```typescript
    * const logger = Logger.withDefaults();
    * const response = await logger.captureAsyncError(fetch("/api/data"));
-   *
    * ```
    */
   async captureAsyncError<T>(
