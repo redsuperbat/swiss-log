@@ -174,6 +174,38 @@ export class Logger {
     return this;
   }
 
+  /**
+   * Clones the logger with a new context, useful for injecting into
+   * other classes
+   *
+   * ```typescript
+   * class WandService {
+   *   #logger: Logger;
+   *   constructor(logger: Logger) {
+   *     this.#logger = logger.cloneWithContext(WandService.name)
+   *   }
+   * }
+   * ```
+   */
+  cloneWithContext(context: string): Logger {
+    return this.clone().setContext(context);
+  }
+
+  /**
+   * Clones the logger instance passing all instance attributes
+   * to the new instance
+   */
+  clone(): Logger {
+    return new Logger({
+      attributes: this.#attributes,
+      context: this.#context,
+      formatter: this.#formatter,
+      correlationIdProvider: this.#correlationIdProvider,
+      logLevel: this.#logLevel,
+      transports: this.#transports,
+    });
+  }
+
   #extractErrorInformation(error: unknown): JsonSerializableValue {
     if (error instanceof Error) {
       return {
