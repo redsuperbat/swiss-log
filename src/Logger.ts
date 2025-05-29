@@ -1,11 +1,8 @@
-import type {
-  JsonSerializable,
-  JsonSerializableValue,
-  LogEntry,
-} from "./LogEntry.js";
+import type { JsonSerializable, LogEntry } from "./LogEntry.js";
 import { LogLevel } from "./LogLevel.js";
 import { ConsoleLogFormatter } from "./formatters/ConsoleLogFormatter.js";
 import type { LogFormatter } from "./formatters/LogFormatter.js";
+import { serializeError } from "./serializeError.js";
 import { ConsoleTransport } from "./transport/ConsoleTransport.js";
 import type { Transport } from "./transport/Transport.js";
 
@@ -206,39 +203,6 @@ export class Logger {
     });
   }
 
-  #extractErrorInformation(error: unknown): JsonSerializableValue {
-    if (error instanceof Error) {
-      return {
-        name: error.name,
-        stack: error.stack,
-        cause: this.#extractErrorInformation(error.cause),
-      };
-    }
-
-    if (error === undefined) {
-      return;
-    }
-
-    if (error === null) {
-      return "null error";
-    }
-
-    if (typeof error === "object") {
-      return Object.fromEntries(
-        Object.entries(error).map(([key, val]) => [
-          key,
-          this.#extractErrorInformation(val),
-        ]),
-      );
-    }
-
-    if (Array.isArray(error)) {
-      return error.map(this.#extractErrorInformation);
-    }
-
-    return String(error);
-  }
-
   /**
    * Add an additional property to the logger instance
    */
@@ -259,25 +223,31 @@ export class Logger {
   }
 
   /**
-   * Captures and logs any rejected promise as an "error" log.
-   * The captured rejected promise is not modified and re-thrown.
+   * Captures and logs any error as an "error" log.
+   * The captured error is not modified and re-thrown.
    *
    * ```typescript
    * const logger = Logger.withDefaults();
-   * const response = await logger.captureAsyncError(fetch("/api/data"));
+   * const response = await logger.captureError(fetch("/api/data"));
    * ```
    */
-  async captureAsyncError<T>(
-    promise: Promise<T>,
-    message?: string,
-  ): Promise<T> {
-    try {
-      return await promise;
-    } catch (error) {
-      this.error(message ?? "unhandled error in promise", {
-        error: this.#extractErrorInformation(error),
+  captureError<T>(operation: () => T, message?: string): T;
+  captureError<T>(operation: Promise<T>, message?: string): Promise<T>;
+  captureError<T>(
+    operation: Promise<T> | (() => T),
+    message = "unhandled error",
+  ): T | Promise<T> {
+    if (operation instanceof Promise) {
+      return operation.catch((e) => {
+        this.error(message, { error: serializeError(e) });
+        throw e;
       });
-      throw error;
+    }
+    try {
+      return operation();
+    } catch (e) {
+      this.error(message, { error: serializeError(e) });
+      throw e;
     }
   }
 
