@@ -1,6 +1,6 @@
 {
   "name": "swiss-log",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "files": ["dist"],
   "description": "Logger with sensible defaults",
   "exports": {
