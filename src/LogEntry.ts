@@ -25,7 +25,7 @@ export type LogEntry = {
   timestamp: Date;
   /**
    * Additional properties which can be passed into the logger constructor
-   * Good usecases are for request scoped properties
+   * Good use cases are request scoped properties
    */
   additionalProperties?: JsonSerializable;
 };

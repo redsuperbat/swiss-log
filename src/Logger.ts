@@ -21,7 +21,7 @@ export type LoggerOpts = {
    *
    *  The default formatter is the `ConsoleLogFormatter` which prints the logs in the following format:
    *
-   *  ```bash
+   *  ```sh
    *  [2024-03-29T17:18:12.505Z] INFO [NoContext] started server {"port":3030}
    *  ```
    *
@@ -91,7 +91,7 @@ export type LoggerOpts = {
   /**
    * Custom attributes which will be accessible to the log formatter when formatting your log
    */
-  attributes?: JsonSerializable;
+  additionalProperties?: JsonSerializable;
   /**
    * Transports are outputs for logs after they have been passed through the formatter
    *
@@ -124,7 +124,7 @@ export class Logger {
 
   #context?: string;
   #correlationIdProvider?: CorrelationIdProvider;
-  #attributes?: JsonSerializable;
+  #additionalProperties?: JsonSerializable;
 
   constructor(opts: LoggerOpts = {}) {
     this.#logLevel = opts.logLevel ?? LogLevel.info;
@@ -133,7 +133,7 @@ export class Logger {
 
     this.#context = opts.context;
     this.#correlationIdProvider = opts.correlationIdProvider;
-    this.#attributes = opts.attributes;
+    this.#additionalProperties = opts.additionalProperties;
   }
 
   /**
@@ -197,7 +197,7 @@ export class Logger {
    */
   clone(): Logger {
     return new Logger({
-      attributes: this.#attributes,
+      additionalProperties: this.#additionalProperties,
       context: this.#context,
       formatter: this.#formatter,
       correlationIdProvider: this.#correlationIdProvider,
@@ -240,11 +240,21 @@ export class Logger {
   }
 
   /**
-   * Dynamically add an additional property to the logger instance
+   * Add an additional property to the logger instance
    */
   addProperty(key: string, value: JsonSerializable[string]): Logger {
-    this.#attributes ??= {};
-    this.#attributes[key] = value;
+    this.addProperties({ [key]: value });
+    return this;
+  }
+
+  /**
+   * Add additional properties to the logger instance
+   */
+  addProperties(properties: JsonSerializable) {
+    this.#additionalProperties ??= {};
+    for (const [k, v] of Object.entries(properties)) {
+      this.#additionalProperties[k] = v;
+    }
     return this;
   }
 
@@ -283,7 +293,7 @@ export class Logger {
       body,
       context: this.#context,
       correlationId: this.#correlationIdProvider?.get(),
-      additionalProperties: this.#attributes,
+      additionalProperties: this.#additionalProperties,
     };
     const log = this.#formatter.format(entry);
     for (const t of this.#transports) {
