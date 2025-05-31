@@ -5,6 +5,10 @@ import type { LogFormatter } from "./LogFormatter.js";
 type ColorFn = (text: string) => string;
 
 export class ConsoleLogFormatter implements LogFormatter {
+  #pretty: boolean;
+  constructor({ pretty }: { pretty?: boolean }) {
+    this.#pretty = pretty ?? false;
+  }
   #colors: Record<LogLevel, ColorFn> = {
     [LogLevel.debug]: (text: string) => `\x1B[95m${text}\x1B[39m`,
     [LogLevel.info]: (text: string) => `\x1B[32m${text}\x1B[39m`,
@@ -12,9 +16,7 @@ export class ConsoleLogFormatter implements LogFormatter {
     [LogLevel.error]: (text: string) => `\x1B[31m${text}\x1B[39m`,
     [LogLevel.fatal]: (text: string) => `\x1B[31m${text}\x1B[39m`,
     [LogLevel.warn]: (text: string) => `\x1B[33m${text}\x1B[39m`,
-    [LogLevel.silent]: () => {
-      throw new Error("silent log level should not be passed");
-    },
+    [LogLevel.silent]: (text: string) => text,
   };
   #clc = {
     yellow: (text: string) => `\x1B[33m${text}\x1B[39m`,
@@ -32,6 +34,6 @@ export class ConsoleLogFormatter implements LogFormatter {
     message = colorFn(message);
     context = this.#clc.yellow(`[${context ?? "NoContext"}]`);
     message = `[${timestamp.toISOString()}] ${colorLevel} ${context} ${message}`;
-    return `${message} ${body ? this.#clc.gray(JSON.stringify(body)) : ""}`;
+    return `${message} ${body ? this.#clc.gray(JSON.stringify(body, null, this.#pretty ? 2 : 0)) : ""}`;
   }
 }
