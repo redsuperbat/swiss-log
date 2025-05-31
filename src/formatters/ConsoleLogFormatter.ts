@@ -6,7 +6,7 @@ type ColorFn = (text: string) => string;
 
 export class ConsoleLogFormatter implements LogFormatter {
   #pretty: boolean;
-  constructor({ pretty }: { pretty?: boolean }) {
+  constructor({ pretty }: { pretty?: boolean } = {}) {
     this.#pretty = pretty ?? false;
   }
   #colors: Record<LogLevel, ColorFn> = {
